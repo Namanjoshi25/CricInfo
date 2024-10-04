@@ -1,19 +1,50 @@
 "use client"
 
-import { notFound } from "next/navigation"
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useEffect, useState } from "react"
 import { fetchMatchCommentry, fetchMatchDetails } from "@/lib/actions/cricData.actions"
-import MatchScorecard from "@/components/app-scorecard-id-page"
 
 
-
+type MatchInfo = {
+  matchId: number;
+  matchDescription: string;
+  matchFormat: string;
+  matchType: string;
+  complete: boolean;
+  domestic: boolean;
+  matchStartTimestamp: number;
+  matchCompleteTimestamp: number;
+  dayNight: boolean;
+  year: number;
+  dayNumber: number;
+  state: string;
+  status: string;
+  tossResults?: string; // Assuming it's optional, since value is missing
+  result?: string; // Optional, as no value was provided
+  revisedTarget?: string; // Optional
+  playersOfTheMatch?: string[]; // Array of strings if multiple players
+  playersOfTheSeries?: string[]; // Array of strings if multiple players
+  matchTeamInfo?: string; // Assuming it's a string (can be updated if you have more details)
+  isMatchNotCovered: boolean;
+  team1?: string; // Assuming team1 is a string (can be replaced with an object if more details exist)
+  team2?: string; // Same for team2
+  seriesDesc: string;
+  seriesId: number;
+  seriesName: string;
+  alertType: string;
+  livestreamEnabled: boolean;
+};
+type CommentaryObject ={
+  commText : string,
+  overNumber : Number  
+}
 export default function Page({ params }: { params: { id: string } }) {
   const [matchScorecard, setMatchScorecard] = useState([]);
-  const [matchDetails     , setMatchDetails     ] = useState({});
-  const [commentary,setCommentary]=useState([])
+  const [matchDetails     , setMatchDetails     ] = useState<MatchInfo>({});
+  const [commentary,setCommentary]=useState<CommentaryObject>([])
    // State to track which innings is currently shown
    const [expandedInningsIndex, setExpandedInningsIndex] = useState(
     matchScorecard.length - 1 // Default to the last innings
